@@ -1,0 +1,23 @@
+{
+  "name": "nodejs-twitterdict",
+  "version": "0.0.1",
+  "description": "",
+  "homepage": "https://github.com/kphongph/nodejs-twitterdict",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kphongph/nodejs-twitterdict"
+  },
+  "keywords": [], 
+  "author": "Phongphun Kijsanayothin <kphongph@gmail.com>",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://github.com/jprichardson/node-google/raw/master/LICENSE"
+    }
+  ],
+  "dependencies": {
+    "cheerio": "~0.10.8",
+    "request": "2.12.x",
+    "commander": "~1.1.1"
+  }
+}
