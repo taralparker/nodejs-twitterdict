@@ -1,8 +1,6 @@
 var google = require('./lib/google');
 
 var natural = require('natural');
-var tfidf = new natural.TfIdf();
-
 var Db = require('mongodb').Db;
 var Server = require('mongodb').Server;
 var config = require('./db_config');
@@ -65,6 +63,7 @@ open(function(err, db) {
       if(cpage.href) {
         console.log(cpage.href);
         google.text(cpage.href, function(text) {
+          var tfidf = new natural.TfIdf();
           tfidf.addDocument(text);
           tfidf.listTerms(0).forEach(function(item) {
             if(!/^\d+$/.test(item.term)) {
