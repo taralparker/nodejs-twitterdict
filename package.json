@@ -18,6 +18,8 @@
   "dependencies": {
     "cheerio": "~0.10.8",
     "request": "2.12.x",
+    "natural": "*",
+    "mongodb": "*",
     "commander": "~1.1.1"
   }
 }
