@@ -18,6 +18,7 @@ db.open(function(err, db) {
           docs.forEach(function(doc) {
             console.log(doc);
           });
+          console.log(docs.length);
           db.close();
         });
       });
