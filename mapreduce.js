@@ -24,8 +24,9 @@ db.open(function(err, db) {
         collection.mapReduce(map,reduce, {out:{inline:1},verbose:true},
           function(err,results,stats) {
           if(err) throw err;
-          results.forEach(function(doc) {
-            console.log(doc);
+          results.sort(function(a,b) { return b.value - a.value; });
+          results.forEach(function(doc,idx) {
+            console.log(idx+' '+JSON.stringify(doc));
           });
           db.close();
         });
