@@ -14,23 +14,27 @@ db.open(function(err, db) {
     if(!err) {
       db.collection(config.collection,function(err, collection) {
         var map = function() {
+          if(this.google_page) {
+            emit('google_page',1);
+          }
+          if(this.google_page_keyword) {
+            emit('google_page_keyword',1);
+          }
           if(this.google_page && this.google_page_keyword) {
-            emit(this.key,this.google_page_keyword/this.google_page);
+            emit('both',1);
           }
         };
         var reduce = function(k, vals) {
-          return 1;
+          var sum=0;
+          for(var i=0;i<vals.length;i++) {
+            sum+=vals[i];
+          }
+          return sum;
         };
         collection.mapReduce(map,reduce, {out:{inline:1},verbose:true},
           function(err,results,stats) {
-          if(err) throw err;
-          results.sort(function(a,b) { return b.value - a.value; });
-          var count=1;
-          results.forEach(function(doc,idx) {
-            if(doc.value < 1 && count<100 ) {
-            console.log(count+' '+JSON.stringify(doc));
-            count++;
-            }
+          results.forEach(function(doc) {
+            console.log(JSON.stringify(doc));
           });
           db.close();
         });

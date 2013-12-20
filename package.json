@@ -20,6 +20,7 @@
     "request": "2.12.x",
     "natural": "*",
     "mongodb": "*",
+    "twit": "*",
     "commander": "~1.1.1"
   }
 }

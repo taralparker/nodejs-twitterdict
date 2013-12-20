@@ -67,8 +67,8 @@ var google_page_keyword = function() {
   });
 };
 
-var wtime=(Math.random()*20+10)*1000;
+var wtime=(Math.random()*20+40)*1000;
 console.log('sleep '+wtime+' ms');
 setInterval(google_page,wtime);
-setInterval(google_page_keyword,wtime+5*1000);
+setInterval(google_page_keyword,wtime+20*1000);
 
