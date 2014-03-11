@@ -1,15 +1,17 @@
 module.exports = {
-  keyword:'bully',
+  keyword:'cyberbully',
   db:'bully_dict',
-  collection:'dict',
-  host:'ds061248.mongolab.com',
+ // collection:'bully',
+  host:'localhost',
   server_config:{
    auto_reconnect:false,
    poolSize:4
   },
-  port:61248,
+  port:27017,
+  /*
   authenticate:{
     user:'test',
     pass:'test',
   }
+  */
 }

@@ -7,23 +7,20 @@ var db = new Db(config.db, new Server(
    config.port,
    config.server_config),{safe:false});
 db.open(function(err, db) {
-  if(err) throw err;
-  db.authenticate(
-     config.authenticate.user,
-     config.authenticate.pass,function(err, res) {
-    if(!err) {
-      db.collection(config.collection,function(err, collection) {
-        collection.find().toArray(function(err, docs) {
-          if(err) throw err;
-          docs.forEach(function(doc) {
-            console.log(doc);
-          });
-          console.log(docs.length);
-          db.close();
+    db.collection(config.collection,function(err, collection) {
+      collection.find().toArray(function(err, docs) {
+        if(err) throw err;
+        var google=0;
+        var google_w=0;
+        docs.forEach(function(doc) {
+          console.log(doc);
+          if(doc.google_page) google++;
+          if(doc.google_page_keyword) google_w++;
         });
-      });
-    } else {
-      throw new Error('Error on DB authentication');
-    }
+        console.log('Doc '+docs.length);
+        console.log('google_page '+google);
+        console.log('google_page_keyword '+google_w);
+        db.close();
+    });
   });
 }); 

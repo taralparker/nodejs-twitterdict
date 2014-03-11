@@ -29,6 +29,7 @@ var google_page = function() {
       collection.findOne({
        'google_page':{$exists:false}
       },function(err, doc) {
+        if(doc) {
         google.search(doc.key, function(err, page, next, links) {
           if(err) throw err;
           doc['google_page']=page;
@@ -39,6 +40,9 @@ var google_page = function() {
             db.close();
           });
         });
+        } else {
+          db.close();
+        }
       });
     });
   });
@@ -51,6 +55,7 @@ var google_page_keyword = function() {
       collection.findOne({
        'google_page_keyword':{$exists:false}
       },function(err, doc) {
+        if(doc) {
         google.search(doc.key+' '+config.keyword, 
           function(err, page, next, links) {
           if(err) throw err;
@@ -62,6 +67,9 @@ var google_page_keyword = function() {
             db.close();
           });
         });
+        } else {
+         db.close();
+        }
       });
     });
   });
