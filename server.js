@@ -1,6 +1,7 @@
 var express = require('express');
 var ObjectID = require('mongodb').ObjectID;
 var MongoClient = require('mongodb').MongoClient;
+var natural = require('natural');
 var google = require('./lib/google');
 var app = express();
 
@@ -31,7 +32,7 @@ var get_content = function(col_name,cb) {
 app.get('/',function(req,res) {
   var cmd_list = [
     {'view collection':'/db/list/:collection'},
-    {'view document':'/db/remove/:collection/:id'},
+    {'remove document':'/db/remove/:collection/:id'},
     {'remove collection':'/db/remove/:collection'},
     {'evaluate model':'/model/:collection/:support/:confidence'},
     {'add term':'/db/add/:collection?term=:term&corpus=:corpus'},
@@ -43,7 +44,14 @@ app.get('/',function(req,res) {
 app.get('/db/add/:collection',function(req,res) {
   MongoClient.connect('mongodb://127.0.0.1:27017/'+db_name,function(err,db) {
     var collection = db.collection(req.params.collection);
-    collection.insert(req.query,function(err, result) {
+    var content=req.query;
+    var floatParams = ['support','confidence'];
+    floatParams.forEach(function(name) {
+      if(content[name]) {
+        content[name] = parseFloat(content[name]);
+      }
+    });
+    collection.insert(content,function(err, result) {
       db.close();  
       res.json(result);
     });
@@ -58,13 +66,16 @@ app.get('/google/:collection/:id', function(req, res) {
       // google term
       delete doc._id;
       google.search(doc.term, function(err, page, next, links) {
+       //  console.log('search '+doc.term+' '+page);
         doc['google_term'] = page; 
         google.search(doc.corpus, function(err, page, next, links) {
+        //  console.log('search '+doc.corpus+' '+page);
           doc['google_corpus'] = page;
           google.search(doc.corpus+' '+doc.term, function(err, page, next, links) {
             doc['google_both'] = page;
             doc['support'] = doc.google_both/doc.google_corpus;
             doc['confidence'] = doc.google_both/doc.google_term;
+            doc['updated'] = new Date();
             collection.update({'_id':id},doc,true, function(err, doc) {
               collection.findOne({'_id':id},function(err,doc) {
                 db.close();
@@ -134,6 +145,17 @@ app.get('/model/:collection/:support/:confidence', function(req, res) {
             }
           }
         });
+        // gather new word
+        if(tmp['confidence'] > 0) { 
+          var tfidf = new natural.TfIdf();
+          tfidf.addDocument(item.text);
+          var new_term = [];
+          tfidf.listTerms(0).forEach(function(t_term) {
+            new_term.push(t_term.term);
+          });
+          tmp['twitter_term']=new_term;
+        }
+       
         order_list.push(tmp);
         if(tmp.keyword) {
           hit_list.push(tmp);
@@ -202,4 +224,4 @@ app.get('/model/:collection/:support/:confidence', function(req, res) {
   });
 });
 
-app.listen(80);
+app.listen(8080);

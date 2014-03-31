@@ -15,6 +15,7 @@ db.open(function(err, db) {
       csv().from.path(__dirname+'/terms.csv', {delimiter:',', escape:'"'})
         .on('record', function(row, index) {
           var tmp = {'term':row[0],
+            'corpus':'cyberbully',
             'init':true,
             'support':parseFloat(row[1]),
             'confidence':parseFloat(row[2])};
