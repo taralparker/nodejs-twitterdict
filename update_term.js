@@ -1,4 +1,6 @@
 var http = require('http');
+var log4js = require('log4js');
+var logger = log4js.getLogger();
 
 function callRequest() {
   var col_name = process.argv[2];
@@ -25,10 +27,10 @@ function callRequest() {
           body+=d;
         });
         res.on('end', function() {
-          console.log(body);
+          logger.info(body);
           setTimeout(function() {
             callRequest();
-          },40000);
+          },90000);
         });
       });
      

@@ -75,6 +75,7 @@ app.get('/google/:collection/:id', function(req, res) {
             doc['google_both'] = page;
             doc['support'] = doc.google_both/doc.google_corpus;
             doc['confidence'] = doc.google_both/doc.google_term;
+            if(page) {
             doc['updated'] = new Date();
             collection.update({'_id':id},doc,true, function(err, doc) {
               collection.findOne({'_id':id},function(err,doc) {
@@ -82,6 +83,10 @@ app.get('/google/:collection/:id', function(req, res) {
                 res.json(doc);
               });
             });
+            } else {
+              res.json(doc);
+              db.close();
+            }
           });
         });
       });

@@ -24,6 +24,7 @@
     "jade": "*",
     "mongodb": "*",
     "twit": "*",
+    "log4js": "*",
     "commander": "~1.1.1"
   }
 }
