@@ -9,16 +9,16 @@ var db = new Db(config.db, new Server(config.host,config.port,
 
 db.open(function(err, db) {
   var term_list = [];
-  db.collection('term',function(err, collection) {
-    collection.remove({'init':true},{w:1}, function(err, result) {
+  db.collection(process.argv[2],function(err, collection) {
+    collection.remove({},{w:1}, function(err, result) {
       console.log('removed '+result);
       csv().from.path(__dirname+'/terms.csv', {delimiter:',', escape:'"'})
         .on('record', function(row, index) {
           var tmp = {'term':row[0],
             'corpus':'cyberbully',
             'init':true,
-            'support':parseFloat(row[1]),
-            'confidence':parseFloat(row[2])};
+            'support':parseFloat(row[2]),
+            'confidence':parseFloat(row[1])};
           term_list.push(tmp);})
         .on('end', function() {
           var count=0;

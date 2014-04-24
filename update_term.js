@@ -11,17 +11,40 @@ function callRequest() {
     });
     res.on('end', function() {
       var col_obj = JSON.parse(body);
-      col_obj.sort(function(a, b) { 
-        if(a.updated && b.updated) {
-          return a.updated-b.updated; 
-        } else {
-          if(a.updated) {
-            return 1;
-          }  
+      var target_doc = null;
+      col_obj.forEach(function(doc) {
+        if(!doc.confidence && !target_doc) {
+          if(doc.confidence==null && doc.updated) {
+            target_doc=doc;
+          }
         }
       });
+      if(!target_doc) {
+        col_obj.sort(function(a, b) { 
+          if(a.updated && b.updated) {
+            var a_day = new Date(a.updated);
+            var b_day = new Date(b.updated);
+            return a_day.getTime() -b_day.getTime(); 
+          } else {
+            if(!a.updated && b.updated) {
+              return -1;
+            }  
+            if(a.updated && !b.updated) {
+              return 1;
+            }
+            if(a.updated && b.updated) {
+              return 0;
+            }
+          }
+        });
+      }
+      if(!target_doc) {
+        target_doc=col_obj[0];
+      }
+      // logger.info(target_doc);
+      // logger.info(col_obj);
       http.get("http://129.118.162.97:8080/google/"+col_name+"/"+
-        col_obj[0]._id,function(res) {
+        target_doc._id,function(res) {
         var body = '';
         res.on('data', function(d) {
           body+=d;
@@ -30,7 +53,7 @@ function callRequest() {
           logger.info(body);
           setTimeout(function() {
             callRequest();
-          },90000);
+          },30000);
         });
       });
      
